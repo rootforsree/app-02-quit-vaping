@@ -85,7 +85,7 @@ class QuitWidget : GlanceAppWidget() {
                         TextStyle(
                             fontSize = 13.sp,
                             fontWeight = FontWeight.Medium,
-                            color = Color(0xFF34C759),
+                            color = ColorProvider(Color(0xFF34C759)),
                         ),
                 )
             }
