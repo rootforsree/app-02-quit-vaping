@@ -14,7 +14,6 @@ import com.revenuecat.purchases.PurchasesError
 import com.revenuecat.purchases.interfaces.PurchaseCallback
 import com.revenuecat.purchases.interfaces.ReceiveCustomerInfoCallback
 import com.revenuecat.purchases.interfaces.ReceiveOfferingsCallback
-import com.revenuecat.purchases.models.PeriodType
 import com.revenuecat.purchases.models.StoreTransaction
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -83,10 +82,6 @@ class BillingRepositoryImpl
                 if (isConfigured) {
                     _entitlement.value =
                         EntitlementState.Ready(isPremium = cached, status = null)
-                    // Live update listener keeps entitlement fresh across the session.
-                    Purchases.sharedInstance.customerInfoUpdateListener = { info ->
-                        applyCustomerInfo(info)
-                    }
                     refresh()
                 } else {
                     _entitlement.value = EntitlementState.Unavailable
@@ -189,7 +184,7 @@ class BillingRepositoryImpl
                 entitlement?.let {
                     SubscriptionStatus(
                         isPremium = isPremium,
-                        isInTrial = it.periodType == PeriodType.TRIAL,
+                        isInTrial = it.periodType.name == "TRIAL",
                         // Billing issue with access still active = grace period / account hold.
                         inGracePeriod = it.billingIssueDetectedAt != null && isPremium,
                         willRenew = it.willRenew,
