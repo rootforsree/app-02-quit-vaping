@@ -2,11 +2,8 @@ package com.sreecharan.quitvaping.di
 
 import android.content.Context
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.preferencesDataStore
-import com.sreecharan.quitvaping.data.datastore.SettingsProto
-import com.sreecharan.quitvaping.data.datastore.SettingsSerializer
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,9 +15,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object DataStoreModule {
-    private val Context.settingsDataStore by dataStore(
-        fileName = "settings.pb",
-        serializer = SettingsSerializer,
+    private val Context.settingsDataStore by preferencesDataStore(
+        name = "settings",
     )
 
     private val Context.onboardingDataStore by preferencesDataStore(
@@ -29,9 +25,10 @@ object DataStoreModule {
 
     @Provides
     @Singleton
+    @Named("settings")
     fun provideSettingsDataStore(
         @ApplicationContext context: Context,
-    ): DataStore<SettingsProto> = context.settingsDataStore
+    ): DataStore<Preferences> = context.settingsDataStore
 
     @Provides
     @Singleton

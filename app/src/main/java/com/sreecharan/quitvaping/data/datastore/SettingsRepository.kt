@@ -1,15 +1,21 @@
 package com.sreecharan.quitvaping.data.datastore
 
 import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.booleanPreferencesKey
+import androidx.datastore.preferences.core.edit
+import androidx.datastore.preferences.core.stringPreferencesKey
 import com.sreecharan.quitvaping.data.model.ThemeMode
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
-import java.io.IOException
 import javax.inject.Inject
+import javax.inject.Named
+import javax.inject.Singleton
 
 /**
  * Domain-level app settings: theme, haptics and the master notifications toggle.
+ *
+ * Uses Preferences DataStore (simple key-value, no proto codegen).
  *
  * Deliberately narrow: onboarding completion is owned by [OnboardingRepository],
  * the Play Billing entitlement cache by the billing agent, and per-type
@@ -31,58 +37,36 @@ interface SettingsRepository {
     suspend fun setNotificationsEnabled(enabled: Boolean)
 }
 
+@Singleton
 class SettingsRepositoryImpl
     @Inject
     constructor(
-        private val dataStore: DataStore<SettingsProto>,
+        @Named("settings") private val dataStore: DataStore<Preferences>,
     ) : SettingsRepository {
+        private object Keys {
+            val THEME_MODE = stringPreferencesKey("theme_mode")
+            val HAPTICS_ENABLED = booleanPreferencesKey("haptics_enabled")
+            val NOTIFICATIONS_ENABLED = booleanPreferencesKey("notifications_enabled")
+        }
+
         override val settings: Flow<AppSettings> =
-            dataStore.data
-                .catch { e ->
-                    if (e is IOException) {
-                        emit(SettingsSerializer.defaultValue)
-                    } else {
-                        throw e
-                    }
-                }.map { proto ->
-                    AppSettings(
-                        themeMode = proto.themeMode.toDomain(),
-                        hapticsEnabled = proto.hapticsEnabled,
-                        notificationsEnabled = proto.notificationsEnabled,
-                    )
-                }
+            dataStore.data.map { prefs ->
+                AppSettings(
+                    themeMode = prefs[Keys.THEME_MODE]?.let { ThemeMode.valueOf(it) } ?: ThemeMode.SYSTEM,
+                    hapticsEnabled = prefs[Keys.HAPTICS_ENABLED] ?: true,
+                    notificationsEnabled = prefs[Keys.NOTIFICATIONS_ENABLED] ?: true,
+                )
+            }
 
         override suspend fun setThemeMode(mode: ThemeMode) {
-            dataStore.updateData { current ->
-                current.toBuilder().setThemeMode(mode.toProto()).build()
-            }
+            dataStore.edit { it[Keys.THEME_MODE] = mode.name }
         }
 
         override suspend fun setHapticsEnabled(enabled: Boolean) {
-            dataStore.updateData { current ->
-                current.toBuilder().setHapticsEnabled(enabled).build()
-            }
+            dataStore.edit { it[Keys.HAPTICS_ENABLED] = enabled }
         }
 
         override suspend fun setNotificationsEnabled(enabled: Boolean) {
-            dataStore.updateData { current ->
-                current.toBuilder().setNotificationsEnabled(enabled).build()
-            }
+            dataStore.edit { it[Keys.NOTIFICATIONS_ENABLED] = enabled }
         }
-
-        private fun ThemeModeProto.toDomain(): ThemeMode =
-            when (this) {
-                ThemeModeProto.THEME_MODE_PROTO_UNSPECIFIED -> ThemeMode.SYSTEM
-                ThemeModeProto.SYSTEM -> ThemeMode.SYSTEM
-                ThemeModeProto.LIGHT -> ThemeMode.LIGHT
-                ThemeModeProto.DARK -> ThemeMode.DARK
-                ThemeModeProto.UNRECOGNIZED -> ThemeMode.SYSTEM
-            }
-
-        private fun ThemeMode.toProto(): ThemeModeProto =
-            when (this) {
-                ThemeMode.SYSTEM -> ThemeModeProto.SYSTEM
-                ThemeMode.LIGHT -> ThemeModeProto.LIGHT
-                ThemeMode.DARK -> ThemeModeProto.DARK
-            }
     }
