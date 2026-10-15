@@ -15,6 +15,7 @@ import androidx.glance.action.clickable
 import androidx.glance.appwidget.GlanceAppWidget
 import androidx.glance.appwidget.provideContent
 import androidx.glance.background
+import androidx.glance.unit.ColorProvider
 import androidx.glance.currentState
 import androidx.glance.layout.Alignment
 import androidx.glance.layout.Column
@@ -70,12 +71,12 @@ class QuitWidget : GlanceAppWidget() {
                     TextStyle(
                         fontSize = 40.sp,
                         fontWeight = FontWeight.Bold,
-                        color = Color(0xFF007AFF),
+                        color = ColorProvider(Color(0xFF007AFF)),
                     ),
             )
             Text(
                 text = if (days == 1L) "day vape-free" else "days vape-free",
-                style = TextStyle(fontSize = 14.sp, color = Color(0xFF3A3A3C)),
+                style = TextStyle(fontSize = 14.sp, color = ColorProvider(Color(0xFF3A3A3C))),
             )
             if (savedCents > 0) {
                 Text(

@@ -46,7 +46,6 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.sreecharan.quitvaping.R
-import com.sreecharan.quitvaping.ui.components.AppRatingDialog
 import com.sreecharan.quitvaping.ui.components.EmptyState
 import com.sreecharan.quitvaping.ui.components.GroupCard
 import com.sreecharan.quitvaping.ui.components.InsetGroupedList

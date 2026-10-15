@@ -53,13 +53,19 @@ class TodayViewModel
                 onboardingRepository.onboardingData,
                 quitRepository.observeCheckInForDay(todayEpochDay()),
                 ticker,
-            ) { stats, profile, milestones, onboarding, checkIn, nowMs ->
+            ) { flows: Array<Any?> ->
+                val stats = flows[0] as QuitStats
+                val profile = flows[1] as QuitProfile?
+                val milestones = flows[2] as List<Milestone>
+                val onboarding = flows[3] as OnboardingData
+                val checkIn = flows[4]
+                val nowMs = flows[5] as Long
                 if (profile == null && onboarding.onboardingCompleted && !profileSynced.value) {
                     syncProfileFromOnboarding(onboarding)
                 }
                 val quitMs = profile?.quitDateEpochMs ?: onboarding.quitDateEpochMs
                 val elapsed = (nowMs - quitMs).coerceAtLeast(0)
-                val weeklySpend = profile?.weeklySpendCents ?: onboarding.weeklySpend()
+                val weeklySpend = profile?.weeklySpendCents ?: (onboarding.unitsPerWeek * onboarding.costPerUnitCents)
                 buildState(stats, checkIn != null, milestones, nowMs, quitMs, elapsed, weeklySpend)
             }.flowOn(ioDispatcher)
                 .stateIn(
