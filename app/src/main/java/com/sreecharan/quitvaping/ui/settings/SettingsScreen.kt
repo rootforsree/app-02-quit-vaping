@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.ui.unit.dp
 import androidx.compose.foundation.selection.selectable
 import androidx.compose.foundation.selection.selectableGroup
 import androidx.compose.material.icons.Icons
@@ -562,7 +563,7 @@ private fun SubscriptionCard(
                     CircularProgressIndicator(
                         modifier = Modifier.size(AppDimens.iconSize),
                         color = colors.accent,
-                        strokeWidth = AppDimens.progressStroke,
+                        strokeWidth = 3.dp,
                     )
                 },
                 onClick = null,
@@ -639,7 +640,7 @@ private fun DataCard(
                         CircularProgressIndicator(
                             modifier = Modifier.size(AppDimens.iconSize),
                             color = colors.accent,
-                            strokeWidth = AppDimens.progressStroke,
+                            strokeWidth = 3.dp,
                         )
                     }
                 } else {
