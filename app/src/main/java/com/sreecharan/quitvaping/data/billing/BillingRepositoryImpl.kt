@@ -159,7 +159,7 @@ class BillingRepositoryImpl
             packagesById = offering.availablePackages.associateBy { it.identifier }
             _plans.value =
                 offering.availablePackages.mapNotNull { pkg ->
-                    val product = pkg.product ?: return@mapNotNull null
+                    val product = pkg.product
                     val isAnnual = pkg.packageType.name == "ANNUAL"
                     BillingPlan(
                         packageId = pkg.identifier,
@@ -269,4 +269,3 @@ private fun PurchasesError.toUserMessage(): String =
         else -> message.ifBlank { "Something went wrong. Try again." }
     }
 
-private fun Date.toInstant(): Instant = Instant.ofEpochMilli(time)

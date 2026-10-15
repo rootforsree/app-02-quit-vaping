@@ -56,6 +56,7 @@ class TodayViewModel
             ) { flows: Array<Any?> ->
                 val stats = flows[0] as QuitStats
                 val profile = flows[1] as QuitProfile?
+                @Suppress("UNCHECKED_CAST")
                 val milestones = flows[2] as List<Milestone>
                 val onboarding = flows[3] as OnboardingData
                 val checkIn = flows[4]

@@ -145,7 +145,7 @@ class CravingsViewModel
                     notes = null,
                 )
                 val stats = quitRepository.observeStats().first()
-                quitNotifications.postLapseCompassion(stats.totalCleanDays.toLong())
+                quitNotifications.postLapseCompassion(stats.totalCleanDays)
                 _sos.value = SosUiState.DoneSlipped(stats.totalCleanDays)
             }
         }
