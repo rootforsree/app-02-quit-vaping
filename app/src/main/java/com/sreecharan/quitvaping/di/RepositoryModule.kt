@@ -1,5 +1,7 @@
 package com.sreecharan.quitvaping.di
 
+import com.sreecharan.quitvaping.data.datastore.OnboardingRepository
+import com.sreecharan.quitvaping.data.datastore.OnboardingRepositoryImpl
 import com.sreecharan.quitvaping.data.datastore.SettingsRepository
 import com.sreecharan.quitvaping.data.datastore.SettingsRepositoryImpl
 import com.sreecharan.quitvaping.data.repository.CravingRepository
@@ -16,6 +18,9 @@ import dagger.hilt.components.SingletonComponent
 abstract class RepositoryModule {
     @Binds
     abstract fun bindSettingsRepository(impl: SettingsRepositoryImpl): SettingsRepository
+
+    @Binds
+    abstract fun bindOnboardingRepository(impl: OnboardingRepositoryImpl): OnboardingRepository
 
     @Binds
     abstract fun bindQuitRepository(impl: QuitRepositoryImpl): QuitRepository
