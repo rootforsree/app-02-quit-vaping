@@ -148,10 +148,10 @@ class OnboardingViewModel
             }
         }
 
-        /** Skip path: persist defaults and finish. */
+        /** Skip path: persist current answers (or defaults) and finish. */
         fun onSkip(onDone: () -> Unit) {
             viewModelScope.launch {
-                repository.setOnboardingCompleted()
+                repository.saveOnboarding(_uiState.value.toData())
                 onDone()
             }
         }
