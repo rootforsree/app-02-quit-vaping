@@ -94,3 +94,4 @@ commit them to the repo, and every later run verifies against them.
   before it can be added. Do not ship a production app without it.
 - Baseline profile generation: see `baselineprofile/README.md` (the baseline
   profile module is scaffolded separately).
+# Rebuild trigger
