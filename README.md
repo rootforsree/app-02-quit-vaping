@@ -96,3 +96,4 @@ commit them to the repo, and every later run verifies against them.
   profile module is scaffolded separately).
 # Rebuild trigger
 # Rebuild with key0 alias
+# Rebuild with correct alias and password
